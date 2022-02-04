@@ -1,14 +1,14 @@
-import express from "express";
+import express from 'express';
 
-import routes from "./routes";
+import routes from './routes';
 
 const server = express();
 const PORT = process.env.PORT || 3001;
 
 server.use(express.json());
 
-server.get("/api", routes);
+server.use('/api', routes);
 
 server.listen(PORT, () => {
-  console.log(`Server starded on port ${PORT}`);
+  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });

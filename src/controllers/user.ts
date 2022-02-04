@@ -1,12 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from 'express';
 
 export default class UserController {
-  public async getUser(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ) {
-    console.log("getUser", request, response, next);
+  public async getUser(request: Request, response: Response) {
     try {
       const { id } = request.params;
 
@@ -18,12 +13,7 @@ export default class UserController {
     }
   }
 
-  public async getUsers(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ) {
-    console.log("getUsers", request, response, next);
+  public async getUsers(request: Request, response: Response) {
     try {
       return response.status(200).send([]);
     } catch (error) {

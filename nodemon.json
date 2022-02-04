@@ -1,6 +1,6 @@
 {
   "verbose": false,
-  "watch": ["src/**/*.{ts,js}"],
+  "watch": ["src/"],
   "ignore": ["*.test.js"],
   "execMap": {
     "ts": "ts-node src/server.ts"

@@ -1,9 +1,9 @@
-import { Router } from "express";
+import { Router } from 'express';
 
-import userRoute from "./user";
+import userRoute from './user';
 
 const routes = Router();
 
-routes.use("/users", userRoute);
+routes.use('/users', userRoute);
 
 export default routes;
