@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: database-postgres
+    image: postgres:11
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: database_dev
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    links:
+      - postgres-node-express

@@ -1,0 +1,10 @@
+node_modules
+.vscode
+.git
+
+.editorconfig
+.eslintrc.json
+.gitignore
+.prettierrc.json
+.sequelizerc
+nodemon.json
