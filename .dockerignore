@@ -1,6 +1,8 @@
 node_modules
 .vscode
 .git
+build/
+dist/
 
 .editorconfig
 .eslintrc.json
