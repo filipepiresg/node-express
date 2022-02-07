@@ -4,27 +4,26 @@ import { verify } from 'jsonwebtoken';
 import { secret } from '../config/secret.json';
 import { ErrorMessage } from './error';
 
-export function verifyToken(request: Request, response: Response, next: NextFunction) {
-  let error;
+export function verifyToken(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): Response | void {
   try {
     const token = <string>request.headers['x-access-token'];
 
     if (!token) {
-      error = new ErrorMessage(403, 'No token provided!');
-      return response.status(error.status).json(error);
+      throw new ErrorMessage(403, 'No token provided!');
     }
 
-    verify(token, secret, (err) => {
+    verify(token, secret, { algorithms: ['HS256'], complete: true }, (err) => {
       if (err) {
-        error = new ErrorMessage(401, 'No token provided!');
-        return response.status(error.status).json(error);
+        throw new ErrorMessage(401, err.message);
       }
-      return next();
     });
 
-    throw new ErrorMessage(403, 'Token invalid!');
+    next();
   } catch (err: any) {
-    error = new ErrorMessage(500, err?.name || 'Internal Server Error', err?.message);
-    return response.status(error.status).json(error);
+    next(err);
   }
 }
