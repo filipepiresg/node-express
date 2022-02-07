@@ -25,6 +25,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.2",
+    "express-actuator": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "pg": "^8.7.3",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.12",
+    "@types/express-actuator": "^1.8.0",
     "@types/faker": "5.5.9",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/morgan": "^1.9.3",

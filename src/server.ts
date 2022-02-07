@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { Application } from 'express';
+import actuator from 'express-actuator';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 
@@ -18,6 +19,16 @@ server.use(
     extended: true,
   })
 );
+server.use(
+  actuator({
+    basePath: '/management', // It will set /management/info instead of /info
+    infoGitMode: 'full', // the amount of git information you want to expose, 'simple' or 'full',
+    // infoBuildOptions: undefined, // extra information you want to expose in the build object. Requires an object.
+    // infoDateFormat: undefined, // by default, git.commit.time will show as is defined in git.properties. If infoDateFormat is defined, moment will format git.commit.time. See https://momentjs.com/docs/#/displaying/format/.
+    customEndpoints: [], // array of custom endpoints
+  })
+);
+
 server.use(morgan('tiny'));
 server.use(express.static('public'));
 
@@ -31,7 +42,7 @@ server.use(
   })
 );
 
-sequelize.sync();
+sequelize.sync({ alter: true });
 
 server.use('/api/v1', routes);
 
