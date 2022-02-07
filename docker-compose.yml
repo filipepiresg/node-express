@@ -2,7 +2,6 @@ version: '3'
 
 services:
   postgres:
-    container_name: database-postgres
     image: postgres:11
     ports:
       - "5432:5432"
@@ -10,10 +9,12 @@ services:
       POSTGRES_DB: database_dev
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
+      TZ: 'GMT-3'
+      PGTZ: 'GMT-3'
 
   adminer:
     image: adminer
     ports:
       - 8080:8080
     links:
-      - postgres-node-express
+      - postgres

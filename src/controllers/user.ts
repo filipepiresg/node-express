@@ -1,69 +1,78 @@
-import { Request, Response } from 'express';
+import { Body, Controller, Delete, Get, Patch, Post, Route, SuccessResponse } from 'tsoa';
 
 import { CRUD } from '../@types/CRUD';
-import { UserCreationAttributes } from '../@types/user';
+import { CreateUser, UpdateUser } from '../@types/user';
+import { ErrorMessage } from '../middlewares/error';
 import UserModel from '../models/user';
 
-export default class UserController implements CRUD {
-  public async create(request: Request, response: Response) {
+@Route('api/v1/users')
+export default class UserController extends Controller implements CRUD {
+  @SuccessResponse(201, 'Created')
+  @Post()
+  public async create(@Body() attributes: CreateUser) {
     try {
-      const attributes: UserCreationAttributes = request.body;
-      const user = await UserModel.create(attributes);
+      const newUser = await UserModel.create(attributes);
 
-      return response.status(201).send(user.toJSON());
-    } catch (error) {
-      return response.status(400).send({ error });
+      return newUser.toJSON();
+    } catch (error: any) {
+      throw new ErrorMessage(400, error?.message || 'Something went wrong!');
     }
   }
 
-  public async read(request: Request, response: Response) {
+  @Get('{id}')
+  public async read(id: string) {
     try {
-      const { id } = request.params;
-
       const user = await UserModel.findByPk(id);
 
-      return response.status(200).send(user?.toJSON());
-    } catch (error) {
-      return response.status(400).send({ error });
+      if (!user) {
+        throw new ErrorMessage(404, 'User not found');
+      }
+
+      return user.toJSON();
+    } catch (error: any) {
+      throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
 
-  public async readAll(request: Request, response: Response) {
+  @Get()
+  public async readAll() {
     try {
       const users = await UserModel.findAll();
 
-      return response.status(200).send(users);
-    } catch (error) {
-      return response.status(400).send({ error });
+      return users.map((user) => user.toJSON());
+    } catch (error: any) {
+      throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
 
-  public async update(request: Request, response: Response) {
+  @Patch('{id}')
+  public async update(id: string, @Body() attributes: UpdateUser) {
     try {
-      const { id } = request.params;
-      const attributes = request.body;
-
       const user = await UserModel.findByPk(id);
+      if (!user) {
+        throw new ErrorMessage(404, 'User not found');
+      }
+      const userUpdated = await user.update(attributes);
 
-      const userUpdate = await user?.update(attributes);
-
-      return response.status(200).send(userUpdate);
-    } catch (error) {
-      return response.status(400).send({ error });
+      return userUpdated.toJSON();
+    } catch (error: any) {
+      throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
 
-  public async delete(request: Request, response: Response) {
+  @Delete('{id}')
+  public async delete(id: string) {
     try {
-      const { id } = request.params;
-
       const user = await UserModel.findByPk(id);
 
-      await user?.destroy();
+      if (!user) {
+        throw new ErrorMessage(404, 'User not found');
+      }
+      await user.destroy();
 
-      return response.status(200).send(user?.toJSON());
-    } catch (error) {
-      return response.status(400).send({ error });
+      return user.toJSON();
+    } catch (error: any) {
+      throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
 }

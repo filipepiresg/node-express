@@ -10,3 +10,5 @@ dist/
 .prettierrc.json
 .sequelizerc
 nodemon.json
+
+**/*test*

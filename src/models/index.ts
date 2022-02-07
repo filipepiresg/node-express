@@ -12,8 +12,9 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   ...config,
   dialect: 'postgres',
   define: {
-    deletedAt: true,
+    paranoid: true,
   },
+  timezone: '-03:00',
 });
 
 export { Sequelize, sequelize };

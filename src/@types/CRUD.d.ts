@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { Request, Response } from 'express';
 
-import { UserAttributes } from './user';
+import { ErrorMessage } from '../middlewares/error';
+import { CreateUser, UserAttributes } from './user';
 
 export interface CRUD {
-  create: (request: Request, response: Response) => Promise<Response>;
-  read: (request: Request, response: Response) => Promise<Response>;
-  readAll: (request: Request, response: Response) => Promise<Response>;
-  update: (request: Request, response: Response) => Promise<Response>;
-  delete: (request: Request, response: Response) => Promise<Response>;
+  create: (item: CreateUser) => Promise<UserAttributes>;
+  read: (id: string) => Promise<UserAttributes>;
+  readAll: () => Promise<UserAttributes[]>;
+  update: (id: string, item: UserAttributes) => Promise<UserAttributes>;
+  delete: (id: string) => Promise<UserAttributes>;
 }

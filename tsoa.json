@@ -1,0 +1,20 @@
+{
+  "entryFile": "src/server.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "spec": {
+    "securityDefinitions": {
+      "x-access-token": {
+        "type": "apiKey",
+        "name": "x-access-token",
+        "in": "header"
+      }
+    },
+    "outputDirectory": "public",
+    "specVersion": 3
+  },
+  "routes": {
+    "middleware": "express",
+    "authenticationModule": "./src/middlewares/auth.ts",
+    "routesDir": "public"
+  }
+}

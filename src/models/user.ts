@@ -39,12 +39,11 @@ const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.def
           msg: 'The password field must be between 6 and 20 characters',
         },
       },
-      get: () => undefined,
     },
   },
   {
     hooks: {
-      beforeSave: async (user) => {
+      beforeCreate: async (user) => {
         const password = user.getDataValue('password');
         if (password) {
           const salt = await genSalt(8);
@@ -52,7 +51,20 @@ const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.def
           user.set('password', password_hash);
         }
       },
+      beforeFindAfterOptions: (opts) => {
+        opts.order = ['id'];
+      },
     },
+
+    getterMethods: {
+      password: () => undefined,
+    },
+    indexes: [
+      {
+        fields: ['email'],
+        unique: true,
+      },
+    ],
     tableName: 'USERS',
   }
 );
