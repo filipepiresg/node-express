@@ -12,7 +12,8 @@
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec\"",
     "pretty": "prettier --write",
     "commit": "npx git-cz",
-    "lint": "eslint --ext .js,.ts ./src"
+    "lint": "eslint --ext .js,.ts ./src",
+    "clean": "sequelize db:drop; sequelize db:create; sequelize db:migrate; sequelize db:seed:all"
   },
   "author": {
     "email": "filipepiresg@gmail.com",

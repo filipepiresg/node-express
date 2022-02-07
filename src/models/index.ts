@@ -11,9 +11,6 @@ const config = configs[env];
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   ...config,
   dialect: 'postgres',
-  define: {
-    paranoid: true,
-  },
   timezone: '-03:00',
 });
 

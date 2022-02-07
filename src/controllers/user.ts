@@ -12,13 +12,13 @@ import {
 } from 'tsoa';
 
 import { CRUD } from '../@types/CRUD';
-import { CreateUser, UpdateUser } from '../@types/user';
+import { CreateUser, UpdateUser, UserAttributes } from '../@types/user';
 import { ErrorMessage } from '../middlewares/error';
 import UserModel from '../models/user';
 
 @Tags('Users')
 @Route('api/v1/users')
-export default class UserController extends Controller implements CRUD {
+export default class UserController extends Controller implements CRUD<UserAttributes, CreateUser> {
   @Security('x-access-token')
   @SuccessResponse(201, 'Created')
   @Post()

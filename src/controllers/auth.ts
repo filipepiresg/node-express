@@ -1,5 +1,6 @@
 import { compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
 import { Body, Controller, Get, Post, Request, Route, Security, Tags } from 'tsoa';
 
 import { AuthJwtPayload } from '../@types/auth';
@@ -19,8 +20,13 @@ export default class AuthController extends Controller {
       const user = await UserModel.findOne({
         where: {
           email: data.email,
+          deletedAt: {
+            [Op.eq]: null,
+          },
         },
+        attributes: ['password'],
       });
+
       if (!user) {
         throw new ErrorMessage(404, 'User not found!');
       }

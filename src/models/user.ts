@@ -1,12 +1,12 @@
 'use strict';
-import { genSalt, hash } from 'bcryptjs';
+import { genSaltSync as genSalt, hashSync as hash } from 'bcryptjs';
 import { DataTypes, ModelDefined } from 'sequelize';
 
 import { UserAttributes, UserCreationAttributes } from '../@types/user';
 import { sequelize } from './index';
 
 const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.define(
-  'user',
+  'users',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -43,19 +43,36 @@ const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.def
   },
   {
     hooks: {
-      beforeCreate: async (user) => {
+      beforeCreate: (user) => {
         const password = user.getDataValue('password');
+
         if (password) {
-          const salt = await genSalt(8);
-          const password_hash = await hash(password, salt);
+          const salt = genSalt(8);
+          const password_hash = hash(password, salt);
           user.set('password', password_hash);
         }
       },
-      beforeFindAfterOptions: (opts) => {
-        opts.order = ['id'];
+      beforeSave: (user) => {
+        const email = user.getDataValue('email');
+        if (email) {
+          user.set('email', email.toLowerCase());
+        }
+      },
+      beforeBulkCreate: (users) => {
+        users.forEach((user) => {
+          const password = user.getDataValue('password');
+          if (password) {
+            const salt = genSalt(8);
+            const password_hash = hash(password, salt);
+            user.set('password', password_hash);
+          }
+        });
       },
     },
-
+    defaultScope: {
+      attributes: ['id', 'email', 'firstName', 'lastName', 'createdAt', 'updatedAt'],
+      order: ['id'],
+    },
     getterMethods: {
       password: () => undefined,
     },
@@ -65,7 +82,9 @@ const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.def
         unique: true,
       },
     ],
-    tableName: 'USERS',
+    modelName: 'users',
+    timestamps: true,
+    paranoid: true,
   }
 );
 

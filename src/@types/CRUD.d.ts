@@ -2,12 +2,11 @@
 import { Request, Response } from 'express';
 
 import { ErrorMessage } from '../middlewares/error';
-import { CreateUser, UserAttributes } from './user';
 
-export interface CRUD {
-  create: (item: CreateUser) => Promise<UserAttributes>;
-  read: (id: string) => Promise<UserAttributes>;
-  readAll: () => Promise<UserAttributes[]>;
-  update: (id: string, item: UserAttributes) => Promise<UserAttributes>;
-  delete: (id: string) => Promise<UserAttributes>;
+export interface CRUD<T, D> {
+  create: (item: D) => Promise<T>;
+  read: (id: string) => Promise<T>;
+  readAll: () => Promise<T[]>;
+  update: (id: string, item: T) => Promise<T>;
+  delete: (id: string) => Promise<T>;
 }
