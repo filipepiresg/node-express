@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 
 import { errorHandler } from './middlewares/error';
+import { notFoundHandler } from './middlewares/notfound';
 import { sequelize } from './models';
 import routes from './routes';
 
@@ -33,6 +34,8 @@ server.use(
 sequelize.sync();
 
 server.use('/api/v1', routes);
+
+server.use(notFoundHandler);
 
 server.use(errorHandler);
 

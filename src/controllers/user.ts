@@ -1,12 +1,25 @@
-import { Body, Controller, Delete, Get, Patch, Post, Route, SuccessResponse } from 'tsoa';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Route,
+  Security,
+  SuccessResponse,
+  Tags,
+} from 'tsoa';
 
 import { CRUD } from '../@types/CRUD';
 import { CreateUser, UpdateUser } from '../@types/user';
 import { ErrorMessage } from '../middlewares/error';
 import UserModel from '../models/user';
 
+@Tags('Users')
 @Route('api/v1/users')
 export default class UserController extends Controller implements CRUD {
+  @Security('x-access-token')
   @SuccessResponse(201, 'Created')
   @Post()
   public async create(@Body() attributes: CreateUser) {
@@ -19,6 +32,7 @@ export default class UserController extends Controller implements CRUD {
     }
   }
 
+  @Security('x-access-token')
   @Get('{id}')
   public async read(id: string) {
     try {
@@ -34,6 +48,7 @@ export default class UserController extends Controller implements CRUD {
     }
   }
 
+  @Security('x-access-token')
   @Get()
   public async readAll() {
     try {
@@ -45,6 +60,7 @@ export default class UserController extends Controller implements CRUD {
     }
   }
 
+  @Security('x-access-token')
   @Patch('{id}')
   public async update(id: string, @Body() attributes: UpdateUser) {
     try {
@@ -60,6 +76,7 @@ export default class UserController extends Controller implements CRUD {
     }
   }
 
+  @Security('x-access-token')
   @Delete('{id}')
   public async delete(id: string) {
     try {
