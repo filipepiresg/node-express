@@ -4,27 +4,49 @@
     "password": "docker",
     "database": "database_dev",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "sequelize",
+    "logging": false,
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "idle": 10000
+    }
   },
   "test": {
     "username": "docker",
     "password": "docker",
     "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "sequelize",
+    "logging": false,
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "idle": 10000
+    }
   },
   "production": {
     "username": "docker",
     "password": "docker",
     "database": "database_prd",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "none"
   },
   "staging": {
     "username": "docker",
     "password": "docker",
     "database": "database_stg",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "sequelize",
+    "logging": false,
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "idle": 10000
+    }
   }
 }

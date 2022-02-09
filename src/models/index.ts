@@ -13,9 +13,10 @@ const config = configs[env];
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   ...config,
   dialect: 'postgres',
-  timezone: '-03:00',
+  timezone: 'America/Sao_Paulo',
   define: {
     freezeTableName: true,
+    charset: 'utf8',
   },
 });
 
@@ -48,4 +49,4 @@ sequelize
   });
 
 export { Sequelize, sequelize };
-export { UserModel, RoleModel };
+export { RoleModel, UserModel };
