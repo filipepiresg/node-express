@@ -5,6 +5,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Route,
   Security,
   SuccessResponse,
@@ -16,7 +17,7 @@ import { ErrorMessage } from '../middlewares/error';
 import { sequelize, UserModel } from '../models';
 
 @Tags('Users')
-@Route('api/v1/users')
+@Route('/v1/users')
 export default class UserController extends Controller {
   @Security('x-access-token')
   @SuccessResponse(201, 'Created')
@@ -54,9 +55,9 @@ export default class UserController extends Controller {
 
   @Security('x-access-token')
   @Get()
-  public async readAll() {
+  public async readAll(@Query('limit') limit: number = 10, @Query('page') page: number = 1) {
     try {
-      const users = await UserModel.findAll();
+      const users = await UserModel.findAll({ limit, offset: (page - 1) * limit });
 
       return users.map((user) => user.toJSON());
     } catch (error: any) {

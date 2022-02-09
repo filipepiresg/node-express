@@ -28,7 +28,12 @@ userRouter.get('/:id', async (req, res, next) => {
 
 userRouter.get('/', async (req, res, next) => {
   try {
-    const users = await userController.readAll();
+    const limit = <string>req.query?.limit;
+    const page = <string>req.query?.page;
+    const _limit = parseInt(limit, 10) || 10;
+    const _page = parseInt(page, 10) || 1;
+
+    const users = await userController.readAll(_limit, _page);
     return res.send(users);
   } catch (error) {
     return next(error);

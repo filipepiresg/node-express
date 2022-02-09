@@ -2,6 +2,7 @@
   "entryFile": "src/server.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
+    "basePath": "api",
     "securityDefinitions": {
       "x-access-token": {
         "type": "apiKey",

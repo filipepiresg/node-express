@@ -6,7 +6,7 @@ import { ErrorMessage } from '../middlewares/error';
 export interface CRUD<T, D> {
   create: (item: D) => Promise<T>;
   read: (id: string) => Promise<T>;
-  readAll: () => Promise<T[]>;
+  readAll: (limit?: number, page?: number) => Promise<T[]>;
   update: (id: string, item: T) => Promise<T>;
   delete: (id: string) => Promise<T>;
 }

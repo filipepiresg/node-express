@@ -11,7 +11,7 @@ import { ErrorMessage } from '../middlewares/error';
 import { UserModel } from '../models';
 
 @Tags('Authentication')
-@Route('/api/v1/auth')
+@Route('/v1/auth')
 export default class AuthController extends Controller {
   @Post('login')
   public async login(@Body() data: { email: string; password: string }) {
