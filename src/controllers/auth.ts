@@ -1,13 +1,12 @@
 'use strict';
 
 import { compare } from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { Body, Controller, Get, Post, Request, Route, Security, Tags } from 'tsoa';
 
 import { AuthJwtPayload, LoginParams } from '../@types/auth';
-import { secret } from '../config/secret.json';
 import { ErrorMessage } from '../middlewares/error';
 import { UserModel } from '../models';
+import { decodeJwt, generateJwt } from '../utils/token';
 
 @Tags('Authentication')
 @Route('/v1/auth')
@@ -35,21 +34,10 @@ export default class AuthController extends Controller {
         throw new ErrorMessage(401, 'Invalid password!');
       }
 
-      const token = await jwt.sign(
-        {
-          id: user.getDataValue('id'),
-          name: user.getDataValue('firstName'),
-        },
-        secret,
-        {
-          expiresIn: '72h',
-          algorithm: 'HS256',
-          header: {
-            alg: 'HS256',
-            typ: 'JWT',
-          },
-        }
-      );
+      const token = generateJwt({
+        id: user.getDataValue('id'),
+        name: user.getDataValue('firstName'),
+      });
 
       return { token, user: user.toJSON() };
     } catch (error: any) {
@@ -65,11 +53,8 @@ export default class AuthController extends Controller {
   @Get('renewToken')
   public async renewToken(@Request() token: string) {
     try {
-      const decode = <AuthJwtPayload>jwt.decode(token, { json: true });
+      const decode = <AuthJwtPayload>decodeJwt(token);
 
-      if (!decode) {
-        throw new ErrorMessage(403, 'No token provided!');
-      }
       const user = await UserModel.findOne({
         where: {
           id: decode.id,
@@ -79,21 +64,10 @@ export default class AuthController extends Controller {
         throw new ErrorMessage(404, 'User not found!');
       }
 
-      const newToken = await jwt.sign(
-        {
-          id: user.getDataValue('id'),
-          name: user.getDataValue('firstName'),
-        },
-        secret,
-        {
-          expiresIn: '72h',
-          algorithm: 'HS256',
-          header: {
-            alg: 'HS256',
-            typ: 'JWT',
-          },
-        }
-      );
+      const newToken = generateJwt({
+        id: user.getDataValue('id'),
+        name: user.getDataValue('firstName'),
+      });
 
       return { token: newToken, user: user.toJSON() };
     } catch (error: any) {

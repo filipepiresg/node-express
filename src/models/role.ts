@@ -46,6 +46,7 @@ export class Role extends Model<
     users: Association<Role, User>;
   };
 }
+
 export default (sequelize: Sequelize) => {
   return Role.init(
     {

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { verify } from 'jsonwebtoken';
+import { NotBeforeError, TokenExpiredError } from 'jsonwebtoken';
 
 import roles from '../config/roles.json';
-import { secret } from '../config/secret.json';
 import { UserModel } from '../models';
+import { verifyJwt } from '../utils/token';
 import { ErrorMessage } from './error';
 
 export function verifyToken(
@@ -18,10 +18,23 @@ export function verifyToken(
       throw new ErrorMessage(403, 'No token provided!');
     }
 
-    verify(token, secret, { algorithms: ['HS256'], complete: false }, (err, decode) => {
+    verifyJwt(token, undefined, (err, decode) => {
+      if (err) {
+        if (err instanceof NotBeforeError) {
+          const details =
+            err?.inner && err?.date ? { message: err.inner, date: err.date } : undefined;
+          throw new ErrorMessage(401, err.message, details);
+        } else if (err instanceof TokenExpiredError) {
+          const details =
+            err?.inner && err?.expiredAt ? { message: err.inner, date: err.expiredAt } : undefined;
+          throw new ErrorMessage(401, err.message, details);
+        }
+        const details = err?.inner ? { message: err.inner } : undefined;
+        throw new ErrorMessage(401, err.message, details);
+      }
       const id = typeof decode === 'string' ? decode : decode?.id;
-      if (err || !id) {
-        throw new ErrorMessage(401, err?.message || 'Token is invalid');
+      if (id === undefined) {
+        throw new ErrorMessage(403, 'User is invalid!', { message: decode });
       }
 
       request.params.userId = id;
@@ -38,7 +51,7 @@ export function isAdmin(request: Request, response: Response, next: NextFunction
     .then((user) => {
       user?.getRoles().then((_roles) => {
         if (!_roles) {
-          throw new ErrorMessage(403, 'Require Role!');
+          throw new ErrorMessage(404, 'Require Role!');
         }
 
         const isGranted = _roles.some((role) => role.name === roles[2].name);
@@ -64,7 +77,7 @@ export function isModerator(
     .then((user) => {
       user?.getRoles().then((_roles) => {
         if (!_roles) {
-          throw new ErrorMessage(403, 'Require Role!');
+          throw new ErrorMessage(404, 'Require Role!');
         }
 
         const isGranted = _roles.some((role) => role.name === roles[1].name);
@@ -90,7 +103,7 @@ export function isModeratorOrAdmin(
     .then((user) => {
       user?.getRoles().then((_roles) => {
         if (!_roles) {
-          throw new ErrorMessage(403, 'Require Role!');
+          throw new ErrorMessage(404, 'Require Role!');
         }
 
         const isGranted = _roles.some(

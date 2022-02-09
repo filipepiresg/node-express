@@ -28,7 +28,7 @@ server.use(
   })
 );
 
-server.use(morgan('tiny'));
+server.use(morgan('dev'));
 server.use(express.static('public'));
 
 server.use(
