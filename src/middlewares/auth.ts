@@ -20,9 +20,8 @@ export function verifyToken(
       if (err) {
         throw new ErrorMessage(401, err.message);
       }
+      next();
     });
-
-    next();
   } catch (err: any) {
     next(err);
   }

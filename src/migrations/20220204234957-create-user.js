@@ -15,22 +15,35 @@ module.exports = {
       },
       lastName: {
         type: Sequelize.STRING,
+        defaultValue: '',
       },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true,
+        },
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false,
+        validate: {
+          len: {
+            args: [6, 20],
+            msg: 'The password field must be between 6 and 20 characters',
+          },
+        },
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
       deletedAt: {
         type: Sequelize.DATE,

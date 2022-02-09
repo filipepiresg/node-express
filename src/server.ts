@@ -6,7 +6,6 @@ import swaggerUi from 'swagger-ui-express';
 
 import { errorHandler } from './middlewares/error';
 import { notFoundHandler } from './middlewares/notfound';
-import { sequelize } from './models';
 import routes from './routes';
 
 const server: Application = express();
@@ -41,8 +40,6 @@ server.use(
     },
   })
 );
-
-sequelize.sync({ alter: true });
 
 server.use('/api/v1', routes);
 

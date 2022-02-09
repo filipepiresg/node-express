@@ -11,23 +11,27 @@ import {
   Tags,
 } from 'tsoa';
 
-import { CRUD } from '../@types/CRUD';
-import { CreateUser, UpdateUser, UserAttributes } from '../@types/user';
+import { CreateUser, UpdateUser } from '../@types/user';
 import { ErrorMessage } from '../middlewares/error';
-import UserModel from '../models/user';
+import { sequelize, UserModel } from '../models';
 
 @Tags('Users')
 @Route('api/v1/users')
-export default class UserController extends Controller implements CRUD<UserAttributes, CreateUser> {
+export default class UserController extends Controller {
   @Security('x-access-token')
   @SuccessResponse(201, 'Created')
   @Post()
   public async create(@Body() attributes: CreateUser) {
+    const t = await sequelize.transaction();
     try {
-      const newUser = await UserModel.create(attributes);
+      const newUser = await UserModel.create(attributes, { transaction: t });
 
+      await newUser.addRole(1, { transaction: t });
+
+      await t.commit();
       return newUser.toJSON();
     } catch (error: any) {
+      await t.rollback();
       throw new ErrorMessage(400, error?.message || 'Something went wrong!');
     }
   }

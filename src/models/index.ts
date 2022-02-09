@@ -4,6 +4,8 @@
 import { Sequelize } from 'sequelize';
 
 import configs from '../config/index.json';
+import useRole from './role';
+import useUser from './user';
 
 const env = 'development';
 const config = configs[env];
@@ -12,6 +14,38 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   ...config,
   dialect: 'postgres',
   timezone: '-03:00',
+  define: {
+    freezeTableName: true,
+  },
 });
 
+const RoleModel = useRole(sequelize);
+const UserModel = useUser(sequelize);
+
+RoleModel.belongsToMany(UserModel, {
+  through: 'users_roles',
+  foreignKey: 'role_id',
+  as: 'users',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+UserModel.belongsToMany(RoleModel, {
+  through: 'users_roles',
+  foreignKey: 'user_id',
+  as: 'roles',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error);
+  });
+
 export { Sequelize, sequelize };
+export { UserModel, RoleModel };

@@ -1,12 +1,14 @@
+/* eslint-disable */
+'use strict';
+
 import { compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { Op } from 'sequelize';
 import { Body, Controller, Get, Post, Request, Route, Security, Tags } from 'tsoa';
 
 import { AuthJwtPayload } from '../@types/auth';
 import { secret } from '../config/secret.json';
 import { ErrorMessage } from '../middlewares/error';
-import UserModel from '../models/user';
+import { UserModel } from '../models';
 
 @Tags('Authentication')
 @Route('/api/v1/auth')
@@ -20,9 +22,6 @@ export default class AuthController extends Controller {
       const user = await UserModel.findOne({
         where: {
           email: data.email,
-          deletedAt: {
-            [Op.eq]: null,
-          },
         },
         attributes: ['password'],
       });
