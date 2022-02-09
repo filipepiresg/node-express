@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { CreateUser, UpdateUser } from '../@types/user';
 import UserController from '../controllers/user';
 
 const userRouter = Router();
@@ -7,7 +8,8 @@ const userController = new UserController();
 
 userRouter.post('/', async (req, res, next) => {
   try {
-    const response = await userController.create(req.body);
+    const { email, firstName, password, lastName }: CreateUser = req.body;
+    const response = await userController.create({ email, firstName, password, lastName });
 
     return res.status(201).send(response);
   } catch (error) {
@@ -28,12 +30,12 @@ userRouter.get('/:id', async (req, res, next) => {
 
 userRouter.get('/', async (req, res, next) => {
   try {
-    const limit = <string>req.query?.limit;
-    const page = <string>req.query?.page;
-    const _limit = parseInt(limit, 10) || 10;
-    const _page = parseInt(page, 10) || 1;
+    const queryLmit = <string>req.query?.per_page;
+    const queryPage = <string>req.query?.page;
+    const limit = parseInt(queryLmit, 10) || 10;
+    const page = parseInt(queryPage, 10) || 1;
 
-    const users = await userController.readAll(_limit, _page);
+    const users = await userController.readAll(limit, page);
     return res.send(users);
   } catch (error) {
     return next(error);
@@ -43,8 +45,9 @@ userRouter.get('/', async (req, res, next) => {
 userRouter.patch('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { email, firstName, lastName }: UpdateUser = req.body;
 
-    const response = await userController.update(id, req.body);
+    const response = await userController.update(id, { email, firstName, lastName });
     return res.send(response);
   } catch (error) {
     return next(error);

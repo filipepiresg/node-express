@@ -1,11 +1,10 @@
-/* eslint-disable */
 'use strict';
 
 import { compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Body, Controller, Get, Post, Request, Route, Security, Tags } from 'tsoa';
 
-import { AuthJwtPayload } from '../@types/auth';
+import { AuthJwtPayload, LoginParams } from '../@types/auth';
 import { secret } from '../config/secret.json';
 import { ErrorMessage } from '../middlewares/error';
 import { UserModel } from '../models';
@@ -14,14 +13,14 @@ import { UserModel } from '../models';
 @Route('/v1/auth')
 export default class AuthController extends Controller {
   @Post('login')
-  public async login(@Body() data: { email: string; password: string }) {
+  public async login(@Body() { email, password }: LoginParams) {
     try {
-      if (!data.email || !data.password) {
+      if (!email || !password) {
         throw new ErrorMessage(400, 'E-mail/password not provided!');
       }
       const user = await UserModel.findOne({
         where: {
-          email: data.email,
+          email,
         },
         attributes: ['password'],
       });
@@ -30,7 +29,7 @@ export default class AuthController extends Controller {
         throw new ErrorMessage(404, 'User not found!');
       }
 
-      const isPasswordInvalid = await compare(data.password, user.getDataValue('password'));
+      const isPasswordInvalid = await compare(password, user.getDataValue('password'));
 
       if (!isPasswordInvalid) {
         throw new ErrorMessage(401, 'Invalid password!');

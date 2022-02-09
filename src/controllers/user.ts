@@ -55,7 +55,7 @@ export default class UserController extends Controller {
 
   @Security('x-access-token')
   @Get()
-  public async readAll(@Query('limit') limit: number = 10, @Query('page') page: number = 1) {
+  public async readAll(@Query('per_page') limit = 10, @Query('page') page = 1) {
     try {
       const users = await UserModel.findAll({ limit, offset: (page - 1) * limit });
 
