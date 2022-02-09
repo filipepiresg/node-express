@@ -12,13 +12,17 @@ import {
   Tags,
 } from 'tsoa';
 
-import { CreateUser, UpdateUser } from '../@types/user';
+import { CRUD } from '../@types/CRUD';
+import { CreateUser, UpdateUser, UserSchema } from '../@types/user';
 import { ErrorMessage } from '../middlewares/error';
 import { sequelize, UserModel } from '../models';
 
 @Tags('Users')
 @Route('/v1/users')
-export default class UserController extends Controller {
+export default class UserController
+  extends Controller
+  implements CRUD<CreateUser, UserSchema, UpdateUser>
+{
   @Security('x-access-token')
   @SuccessResponse(201, 'Created')
   @Post()
@@ -30,7 +34,17 @@ export default class UserController extends Controller {
       await newUser.addRole(1, { transaction: t });
 
       await t.commit();
-      return newUser.toJSON();
+
+      const schema: UserSchema = {
+        id: <number>newUser.id,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: <string | null>newUser.lastName,
+        createdAt: <Date>newUser.createdAt,
+        updatedAt: <Date>newUser.updatedAt,
+        deletedAt: <Date | null>newUser.deletedAt,
+      };
+      return schema;
     } catch (error: any) {
       await t.rollback();
       throw new ErrorMessage(400, error?.message || 'Something went wrong!');
@@ -47,7 +61,16 @@ export default class UserController extends Controller {
         throw new ErrorMessage(404, 'User not found');
       }
 
-      return user.toJSON();
+      const schema: UserSchema = {
+        id: <number>user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: <string | null>user.lastName,
+        createdAt: <Date>user.createdAt,
+        updatedAt: <Date>user.updatedAt,
+        deletedAt: <Date | null>user.deletedAt,
+      };
+      return schema;
     } catch (error: any) {
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
@@ -59,7 +82,18 @@ export default class UserController extends Controller {
     try {
       const users = await UserModel.findAll({ limit, offset: (page - 1) * limit });
 
-      return users.map((user) => user.toJSON());
+      return users.map((user) => {
+        const schema: UserSchema = {
+          id: <number>user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: <string | null>user.lastName,
+          createdAt: <Date>user.createdAt,
+          updatedAt: <Date>user.updatedAt,
+          deletedAt: <Date | null>user.deletedAt,
+        };
+        return schema;
+      });
     } catch (error: any) {
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
@@ -75,7 +109,16 @@ export default class UserController extends Controller {
       }
       const userUpdated = await user.update(attributes);
 
-      return userUpdated.toJSON();
+      const schema: UserSchema = {
+        id: <number>userUpdated.id,
+        email: userUpdated.email,
+        firstName: userUpdated.firstName,
+        lastName: <string | null>userUpdated.lastName,
+        createdAt: <Date>userUpdated.createdAt,
+        updatedAt: <Date>userUpdated.updatedAt,
+        deletedAt: <Date | null>userUpdated.deletedAt,
+      };
+      return schema;
     } catch (error: any) {
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
@@ -92,7 +135,16 @@ export default class UserController extends Controller {
       }
       await user.destroy();
 
-      return user.toJSON();
+      const schema: UserSchema = {
+        id: <number>user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: <string | null>user.lastName,
+        createdAt: <Date>user.createdAt,
+        updatedAt: <Date>user.updatedAt,
+        deletedAt: <Date | null>user.deletedAt,
+      };
+      return schema;
     } catch (error: any) {
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }

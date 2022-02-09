@@ -25,3 +25,13 @@ export interface UpdateUser {
   lastName?: string;
   email?: string;
 }
+
+export interface UserSchema {
+  id?: number;
+  firstName?: string;
+  lastName?: string | null;
+  email?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date | null;
+}
