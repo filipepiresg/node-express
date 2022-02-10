@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  Response,
   Route,
   Security,
   SuccessResponse,
@@ -13,18 +14,20 @@ import {
 } from 'tsoa';
 
 import { CRUD } from '../@types/CRUD';
+import { ErrorResponse } from '../@types/response';
 import { CreateUser, UpdateUser, UserSchema } from '../@types/user';
 import { ErrorMessage } from '../middlewares/error';
 import { sequelize, UserModel } from '../models';
 
 @Tags('Users')
-@Route('/v1/users')
+@Route('/users')
 export default class UserController
   extends Controller
   implements CRUD<CreateUser, UserSchema, UpdateUser>
 {
   @Security('x-access-token')
-  @SuccessResponse(201, 'Created')
+  @Response<ErrorResponse>(400)
+  @SuccessResponse(201)
   @Post()
   public async create(@Body() attributes: CreateUser) {
     const t = await sequelize.transaction();
@@ -47,10 +50,12 @@ export default class UserController
       return schema;
     } catch (error: any) {
       await t.rollback();
-      throw new ErrorMessage(400, error?.message || 'Something went wrong!');
+      throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
 
+  @Response<ErrorResponse>(400)
+  @Response<ErrorResponse>(404)
   @Security('x-access-token')
   @Get('{id}')
   public async read(id: string) {
@@ -76,6 +81,7 @@ export default class UserController
     }
   }
 
+  @Response<ErrorResponse>(400)
   @Security('x-access-token')
   @Get()
   public async readAll(@Query('per_page') limit = 10, @Query('page') page = 1) {
@@ -99,6 +105,8 @@ export default class UserController
     }
   }
 
+  @Response<ErrorResponse>(400)
+  @Response<ErrorResponse>(404)
   @Security('x-access-token')
   @Patch('{id}')
   public async update(id: string, @Body() attributes: UpdateUser) {
@@ -124,6 +132,8 @@ export default class UserController
     }
   }
 
+  @Response<ErrorResponse>(400)
+  @Response<ErrorResponse>(404)
   @Security('x-access-token')
   @Delete('{id}')
   public async delete(id: string) {

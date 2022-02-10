@@ -1,17 +1,28 @@
 'use strict';
 
 import { compare } from 'bcryptjs';
-import { Body, Controller, Get, Post, Request, Route, Security, Tags } from 'tsoa';
+import { Body, Controller, Get, Post, Request, Response, Route, Security, Tags } from 'tsoa';
 
 import { AuthJwtPayload, LoginParams } from '../@types/auth';
+import { ErrorResponse } from '../@types/response';
 import { UserSchema } from '../@types/user';
 import { ErrorMessage } from '../middlewares/error';
 import { UserModel } from '../models';
 import { decodeJwt, generateJwt } from '../utils/token';
 
 @Tags('Authentication')
-@Route('/v1/auth')
+@Route('/auth')
 export default class AuthController extends Controller {
+  /**
+   * Faz autenticação do usuário.
+   * É feito login com os dados de e-mail e a senha.
+   * @param {object} data
+   * @param {string} data.email E-mail do usuário
+   * @param {string} data.password Senha do usuário
+   * @returns {object} O token e informações do usuário
+   */
+  @Response<ErrorResponse>(400)
+  @Response<ErrorResponse>(404)
   @Post('login')
   public async login(@Body() { email, password }: LoginParams): Promise<{
     token: string;
@@ -67,7 +78,13 @@ export default class AuthController extends Controller {
     }
   }
 
+  /**
+   * Faz a revalidação e renovação do usuário logado.
+   * @param {string} token Necessário ter autenticado uma primeira vez
+   * @returns O token e informações do usuário
+   */
   @Security('x-access-token')
+  @Response<ErrorResponse>(400)
   @Get('renewToken')
   public async renewToken(@Request() token: string): Promise<{
     token: string;

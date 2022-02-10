@@ -36,7 +36,7 @@ userRouter.get('/', async (req, res, next) => {
     const page = parseInt(queryPage, 10) || 1;
 
     const users = await userController.readAll(limit, page);
-    return res.send(users);
+    return res.status(users.length ? 200 : 204).send(users);
   } catch (error) {
     return next(error);
   }

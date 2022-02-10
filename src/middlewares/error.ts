@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 
-export class ErrorMessage {
+import { ErrorResponse } from '../@types/response';
+
+export class ErrorMessage implements ErrorResponse {
   declare status: number;
   declare message: string;
   declare details?: object | string;

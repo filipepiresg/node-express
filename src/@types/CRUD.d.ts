@@ -1,7 +1,4 @@
 /* eslint-disable no-unused-vars */
-import { Request, Response } from 'express';
-
-import { ErrorMessage } from '../middlewares/error';
 
 export interface CRUD<C, T, U> {
   create: (item: C) => Promise<T>;
