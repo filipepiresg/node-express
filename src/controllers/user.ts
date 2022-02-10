@@ -25,6 +25,10 @@ export default class UserController
   extends Controller
   implements CRUD<CreateUser, UserSchema, UpdateUser>
 {
+  /**
+   * Função para criar o usuário na API e link com sua regra
+   * @summary Cria usuário
+   */
   @Security('x-access-token')
   @Response<ErrorResponse>(400)
   @SuccessResponse(201)
@@ -54,8 +58,15 @@ export default class UserController
     }
   }
 
+  /**
+   * Faz uma busca do usuário na API.
+   * Caso não encontre, retorna um erro de [404](Not Found)
+   * @param {string} id Identificador do usuário buscado
+   * @summary Busca um usuário
+   * @returns Usuário encontrado
+   */
   @Response<ErrorResponse>(400)
-  @Response<ErrorResponse>(404)
+  @Response<ErrorResponse>(404, 'Caso o usuário não for encontrado')
   @Security('x-access-token')
   @Get('{id}')
   public async read(id: string) {
@@ -81,6 +92,14 @@ export default class UserController
     }
   }
 
+  /**
+   * Traz uma lista de usuários registrados na API.
+   * É retornado uma lista paginada.
+   * @param {number} limit Quantidade de usuários por página
+   * @param {number} page Número da página a ser retornada
+   * @summary Lista de usuários com paginação
+   * @returns Lista de usuários da API
+   */
   @Response<ErrorResponse>(400)
   @Security('x-access-token')
   @Get()
@@ -105,8 +124,15 @@ export default class UserController
     }
   }
 
+  /**
+   * Faz uma busca do usuário na API e o atualiza.
+   * Caso não encontre, retorna um erro de [404](Not Found)
+   * @param {string} id Identificador do usuário a ser atualizado
+   * @summary Atualiza um usuário
+   * @returns O novo usuário atualizado
+   */
   @Response<ErrorResponse>(400)
-  @Response<ErrorResponse>(404)
+  @Response<ErrorResponse>(404, 'Caso o usuário não for encontrado')
   @Security('x-access-token')
   @Patch('{id}')
   public async update(id: string, @Body() attributes: UpdateUser) {
@@ -132,8 +158,15 @@ export default class UserController
     }
   }
 
+  /**
+   * Faz uma busca do usuário na API e o atualiza.
+   * Caso não encontre, retorna um erro de [404](Not Found)
+   * @param {string} id Identificador do usuário a ser deletado
+   * @summary Deleta um usuário
+   * @returns  O usuário deletado
+   */
   @Response<ErrorResponse>(400)
-  @Response<ErrorResponse>(404)
+  @Response<ErrorResponse>(404, 'Caso o usuário não for encontrado')
   @Security('x-access-token')
   @Delete('{id}')
   public async delete(id: string) {

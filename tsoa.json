@@ -2,8 +2,6 @@
   "entryFile": "src/server.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
-    "host": "localhost:3000",
-    "schemes": ["http"],
     "basePath": "api/v1",
     "securityDefinitions": {
       "x-access-token": {

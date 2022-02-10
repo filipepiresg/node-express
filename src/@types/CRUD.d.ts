@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
 
+/**
+ * Modelo para base de um CRUD para a API
+ */
 export interface CRUD<C, T, U> {
   create: (item: C) => Promise<T>;
   read: (id: string) => Promise<T>;

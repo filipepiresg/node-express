@@ -19,7 +19,7 @@ export default class AuthController extends Controller {
    * @param {object} data
    * @param {string} data.email E-mail do usuário
    * @param {string} data.password Senha do usuário
-   * @returns {object} O token e informações do usuário
+   * @summary Autentica na API
    */
   @Response<ErrorResponse>(400)
   @Response<ErrorResponse>(404)
@@ -80,8 +80,8 @@ export default class AuthController extends Controller {
 
   /**
    * Faz a revalidação e renovação do usuário logado.
+   * @summary Renova o token
    * @param {string} token Necessário ter autenticado uma primeira vez
-   * @returns O token e informações do usuário
    */
   @Security('x-access-token')
   @Response<ErrorResponse>(400)
