@@ -138,10 +138,36 @@ export default (sequelize: Sequelize) => {
         order: ['id'],
       },
       scopes: {
-        role: {
+        users: {
           include: [
             {
               model: Role,
+              as: 'roles',
+              where: {
+                name: 'user',
+              },
+            },
+          ],
+        },
+        moderators: {
+          include: [
+            {
+              model: Role,
+              as: 'roles',
+              where: {
+                name: 'moderator',
+              },
+            },
+          ],
+        },
+        admins: {
+          include: [
+            {
+              model: Role,
+              as: 'roles',
+              where: {
+                name: 'admin',
+              },
             },
           ],
         },

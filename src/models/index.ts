@@ -6,6 +6,7 @@ import { Sequelize } from 'sequelize';
 import configs from '../config/index.json';
 import useRole from './role';
 import useUser from './user';
+import useUserRoles from './user_roles';
 
 const env = 'development';
 const config = configs[env];
@@ -22,6 +23,7 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 const RoleModel = useRole(sequelize);
 const UserModel = useUser(sequelize);
+const UserRolesModel = useUserRoles(sequelize);
 
 RoleModel.belongsToMany(UserModel, {
   through: 'users_roles',
@@ -49,4 +51,4 @@ sequelize
   });
 
 export { Sequelize, sequelize };
-export { RoleModel, UserModel };
+export { RoleModel, UserModel, UserRolesModel };

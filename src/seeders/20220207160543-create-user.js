@@ -53,21 +53,28 @@ module.exports = {
         }
       );
 
-      await queryInterface.bulkInsert(
-        'users_roles',
-        usersIds.map(({ id }, index) => {
-          if (index === 0) {
-            return { user_id: id, role_id: 3 };
-          }
-          const isModerator = Math.random() > 0.7;
-          return { user_id: id, role_id: isModerator ? 2 : 1 };
-        }),
-        {
-          validate: true,
-          individualHooks: true,
-          transaction: t,
+      const users_role = usersIds.map(({ id }, index) => {
+        if (index === 0) {
+          return { user_id: id, role_id: 3 };
         }
-      );
+        const isModerator = Math.random() > 0.7;
+        return { user_id: id, role_id: isModerator ? 2 : 1 };
+      });
+
+      const users_roles = [];
+      users_role.forEach(({ user_id, role_id }) => {
+        Array.from({ length: role_id }, (_, k) => ({ user_id, role_id: k + 1 })).forEach(
+          (user_role) => {
+            users_roles.push(user_role);
+          }
+        );
+      });
+
+      await queryInterface.bulkInsert('users_roles', users_roles, {
+        validate: true,
+        individualHooks: true,
+        transaction: t,
+      });
 
       await t.commit();
     } catch (error) {
