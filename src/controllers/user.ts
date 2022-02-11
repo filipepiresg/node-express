@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import {
   Body,
   Controller,
@@ -53,6 +54,7 @@ export default class UserController
       };
       return schema;
     } catch (error: any) {
+      Sentry.captureException(error);
       await t.rollback();
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
@@ -88,6 +90,7 @@ export default class UserController
       };
       return schema;
     } catch (error: any) {
+      Sentry.captureException(error);
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
@@ -120,6 +123,7 @@ export default class UserController
         return schema;
       });
     } catch (error: any) {
+      Sentry.captureException(error);
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
@@ -154,6 +158,7 @@ export default class UserController
       };
       return schema;
     } catch (error: any) {
+      Sentry.captureException(error);
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }
@@ -189,6 +194,7 @@ export default class UserController
       };
       return schema;
     } catch (error: any) {
+      Sentry.captureException(error);
       throw new ErrorMessage(error?.status || 400, error?.message || 'Something went wrong!');
     }
   }

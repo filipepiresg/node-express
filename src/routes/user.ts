@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { Router } from 'express';
 
 import { CreateUser, UpdateUser } from '../@types/user';
@@ -13,6 +14,7 @@ userRouter.post('/', async (req, res, next) => {
 
     return res.status(201).send(response);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });
@@ -24,6 +26,7 @@ userRouter.get('/:id', async (req, res, next) => {
 
     return res.send(user);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });
@@ -38,6 +41,7 @@ userRouter.get('/', async (req, res, next) => {
     const users = await userController.readAll(limit, page);
     return res.status(users.length ? 200 : 204).send(users);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });
@@ -50,6 +54,7 @@ userRouter.patch('/:id', async (req, res, next) => {
     const response = await userController.update(id, { email, firstName, lastName });
     return res.send(response);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });
@@ -61,6 +66,7 @@ userRouter.delete('/:id', async (req, res, next) => {
     const response = await userController.delete(id);
     return res.send(response);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });

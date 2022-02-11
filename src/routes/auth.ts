@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { Request, Response, Router } from 'express';
 
 import { LoginParams } from '../@types/auth';
@@ -14,6 +15,7 @@ authRouter.post('/login', async (req: Request, res: Response, next) => {
 
     return res.send(response);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });
@@ -25,6 +27,7 @@ authRouter.get('/renewToken', verifyToken, async (req, res, next) => {
 
     return res.send(response);
   } catch (error) {
+    Sentry.captureException(error);
     return next(error);
   }
 });

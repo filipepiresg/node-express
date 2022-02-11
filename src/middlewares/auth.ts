@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { NextFunction, Request, Response } from 'express';
 import { NotBeforeError, TokenExpiredError } from 'jsonwebtoken';
 
@@ -41,6 +42,7 @@ export function verifyToken(
       next();
     });
   } catch (err: any) {
+    Sentry.captureException(err);
     next(err);
   }
 }

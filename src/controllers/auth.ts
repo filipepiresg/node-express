@@ -1,5 +1,6 @@
 'use strict';
 
+import * as Sentry from '@sentry/node';
 import { compare } from 'bcryptjs';
 import { Body, Controller, Get, Post, Request, Response, Route, Security, Tags } from 'tsoa';
 
@@ -70,6 +71,7 @@ export default class AuthController extends Controller {
 
       return { token, user: schema };
     } catch (error: any) {
+      Sentry.captureException(error);
       throw new ErrorMessage(
         error?.status || 400,
         error?.message || 'Something went wrong!',
@@ -123,6 +125,7 @@ export default class AuthController extends Controller {
 
       return { token: newToken, user: schema };
     } catch (error: any) {
+      Sentry.captureException(error);
       throw new ErrorMessage(
         error?.status || 400,
         error?.message || 'Something went wrong!',
